@@ -2,7 +2,7 @@
 <html lang="ja">
 <!-- 
   Mensetsu Knock - Interview Practice
-  Version: 3.0.0 (Production Ready)
+  Version: 1.0.0 
   Author: Suimin Nerune
   License: MIT
 -->
@@ -36,7 +36,7 @@
     <!-- App Config & Styles -->
     <script>
         const CONFIG = {
-            VERSION: '3.0.0',
+            VERSION: '1.1.0',
             URLS: {
                 YOUTUBE: "https://www.youtube.com/@suimin_nerune",
                 X_SHARE: "https://twitter.com/intent/tweet"
@@ -77,7 +77,7 @@
             background-image: radial-gradient(#bae6fd 15%, transparent 15%);
             background-size: 24px 24px;
             min-height: 100dvh;
-            user-select: none; /* Prevent text selection like native app */
+            user-select: none;
             -webkit-tap-highlight-color: transparent;
             overscroll-behavior-y: none;
         }
@@ -126,7 +126,7 @@
                     <div class="w-full h-full rounded-full border-[6px] border-white shadow-xl overflow-hidden bg-white relative z-10">
                         <img src="./nerune.png" onerror="this.src='https://img.icons8.com/fluency/192/microphone.png'" class="w-full h-full object-cover" alt="Character">
                     </div>
-                    <div class="absolute -bottom-2 -right-2 bg-yellow-400 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm z-20">v3.0</div>
+                    <div class="absolute -bottom-2 -right-2 bg-yellow-400 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm z-20">v1.1</div>
                 </div>
                 <h1 class="mt-5 text-2xl font-extrabold text-brand tracking-wide drop-shadow-sm">めんせつ★ノック</h1>
             </div>
@@ -153,10 +153,11 @@
                     </div>
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block ml-1">話す速さ: <span id="label-speed" class="text-brand">1.0</span></label>
-                        <div class="flex items-center h-[38px] px-2 bg-slate-100 rounded-xl">
-                            <span class="text-xs mr-2">🐢</span>
-                            <input type="range" min="0.5" max="1.5" step="0.1" value="1.0" class="flex-1" oninput="App.setSpeed(this.value)">
-                            <span class="text-xs ml-2">🐇</span>
+                        <!-- UI修正：ウサギが見切れないようにパディング調整(px-3)とoverflow削除 -->
+                        <div class="flex items-center h-[38px] px-3 bg-slate-100 rounded-xl">
+                            <span class="text-xs mr-2 shrink-0">🐢</span>
+                            <input type="range" min="0.5" max="1.5" step="0.1" value="1.0" class="flex-1 min-w-0" oninput="App.setSpeed(this.value)">
+                            <span class="text-xs ml-2 shrink-0">🐇</span>
                         </div>
                     </div>
                 </div>
@@ -199,23 +200,48 @@
                 </button>
             </div>
 
-            <!-- Profile -->
+            <!-- Profile & Privacy -->
             <div class="w-full max-w-sm p-5 bg-white/60 rounded-3xl border border-white text-center shadow-sm">
                 <div class="flex items-center justify-center space-x-3 mb-4">
-                    <div class="w-10 h-10 rounded-full bg-white border border-slate-200 overflow-hidden shadow-sm">
+                    <!-- Icon Size Fix: w-16 h-16 (64px) に拡大 -->
+                    <div class="w-16 h-16 rounded-full bg-white border border-slate-200 overflow-hidden shadow-sm shrink-0">
                         <img src="./nerune.png" onerror="this.src='https://img.icons8.com/fluency/192/microphone.png'" class="w-full h-full object-cover">
                     </div>
-                    <div class="text-left">
-                        <p class="text-sm font-black text-slate-700">彗眠ネルネ💤</p>
-                        <p class="text-[10px] text-slate-500 font-medium">YouTubeで睡魔と闘うVtuber</p>
+                    <div class="text-left min-w-0">
+                        <p class="text-sm font-black text-slate-700 truncate">彗眠ネルネ💤</p>
+                        <p class="text-[10px] text-slate-500 font-medium leading-tight">YouTubeで20時に<br>睡魔と闘うVtuber</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <a href="javascript:void(0)" onclick="window.open(CONFIG.URLS.YOUTUBE, '_blank')" class="btn-3d flex items-center justify-center bg-[#FF0000] border-[#cc0000] text-white text-xs font-bold py-3 rounded-xl shadow-sm hover:brightness-110">Channel</a>
-                    <button onclick="Social.shareApp()" class="btn-3d flex items-center justify-center bg-slate-800 border-slate-900 text-white text-xs font-bold py-3 rounded-xl shadow-sm hover:bg-slate-700">Share</button>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <!-- Updated Buttons -->
+                    <a href="javascript:void(0)" onclick="window.open(CONFIG.URLS.YOUTUBE, '_blank')" class="btn-3d flex items-center justify-center bg-[#FF0000] border-[#cc0000] text-white text-xs font-bold py-3 rounded-xl shadow-sm hover:brightness-110">
+                        <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        YouTube
+                    </a>
+                    <button onclick="Social.shareApp()" class="btn-3d flex items-center justify-center bg-slate-800 border-slate-900 text-white text-xs font-bold py-3 rounded-xl shadow-sm hover:bg-slate-700">
+                        <svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        シェア
+                    </button>
+                </div>
+                <!-- Privacy Note -->
+                <div class="border-t border-slate-200 pt-3">
+                    <p class="text-[9px] text-slate-400 leading-relaxed">
+                        🔒 <span class="font-bold">安心設計</span><br>
+                        録音された音声データは、お使いのスマホ（ブラウザ）内でのみ一時的に処理されます。<br>
+                        <span class="text-brand font-bold">外部サーバーへの送信は一切行われません。</span>
+                    </p>
                 </div>
             </div>
-            <button onclick="alert('【iPhone】\n画面下の共有ボタン → 「ホーム画面に追加」\n\n【Android】\nメニュー → 「アプリをインストール」')" class="mt-8 mb-6 text-[10px] text-slate-400 underline decoration-slate-300">ホーム画面に追加して使う</button>
+            
+            <!-- Install Prompt (Hidden by default) -->
+            <button id="btn-install" class="hidden mt-6 bg-slate-800 text-white text-xs font-bold px-6 py-3 rounded-full shadow-lg animate-bounce-sm" onclick="App.installPWA()">
+                📲 アプリをインストール
+            </button>
+
+            <!-- Manual Install Guide -->
+            <button id="btn-manual-install" onclick="alert('【iPhone】\n画面下の共有ボタン → 「ホーム画面に追加」\n\n【Android】\nメニュー → 「アプリをインストール」')" class="mt-8 mb-6 text-[10px] text-slate-400 underline decoration-slate-300">
+                ホーム画面に追加して使う
+            </button>
         </section>
 
         <!-- === TAB: LIST === -->
@@ -322,7 +348,7 @@
                     <div class="w-8 h-8 bg-white rounded-md"></div>
                 </button>
                 <button id="btn-silent" onclick="App.finishAnswer()" class="hidden btn-3d w-full bg-emerald-500 border-emerald-700 text-white font-bold py-4 rounded-2xl text-lg shadow-lg">🧠 頭の中で回答完了！</button>
-                <p id="mic-error" class="hidden text-xs text-red-400 font-bold mt-2 text-center">マイクが使えないため<br>録音機能はOFFです</p>
+                <p id="mic-error" class="hidden text-xs text-red-400 font-bold mt-2 text-center leading-tight">マイクが使えません<br><span class="text-[10px] text-slate-400">端末の設定で許可してください</span></p>
             </div>
 
             <div id="ctrl-rate" class="hidden text-center animate-slide-up">
@@ -401,605 +427,48 @@
 
     <!-- === LOGIC === -->
     <script>
-        /**
-         * Database of Questions
-         */
-        const DB = {
-            questions: {
-                highschool: [
-                    {q:"志望動機を教えてください。",hint:"「なぜこの学校か」＋「入学後やりたいこと」"},
-                    {q:"中学校で一番頑張ったことは？",hint:"部活や行事。結果よりプロセスを大切に。"},
-                    {q:"あなたの長所と短所は？",hint:"長所はエピソードで。短所は改善策も。"},
-                    {q:"最近気になるニュースは？",hint:"自分の意見を一言添えるのがポイント。"},
-                    {q:"将来の夢はありますか？",hint:"高校生活とどう繋がるか話そう。"},
-                    {q:"本校の校則についてどう思いますか？",hint:"社会のルールを守る姿勢を見せる。"},
-                    {q:"得意教科・苦手教科は？",hint:"苦手なものへの取り組み方を話そう。"},
-                    {q:"休日の過ごし方は？",hint:"趣味や勉強などメリハリをアピール。"},
-                    {q:"通学経路と時間は？",hint:"正確に。代替手段も言えるとベスト。"},
-                    {q:"最近読んだ本は？",hint:"漫画以外推奨。感想を簡単に。"},
-                    {q:"尊敬する人は？",hint:"「なぜ尊敬するか」の理由が重要。"},
-                    {q:"友人からどう言われますか？",hint:"客観的な自己分析ができているか。"},
-                    {q:"自己PRを1分で。",hint:"強みを一つに絞って熱意を込めよう。"},
-                    {q:"卒業後の進路は？",hint:"未定でも「探していきたい」と前向きに。"},
-                    {q:"入りたい部活は？",hint:"勉強との両立も含めて話そう。"},
-                    {q:"最近怒ったことは？",hint:"感情のコントロール力が見られている。"},
-                    {q:"あなたの宝物は？",hint:"大切にしている価値観を伝えよう。"},
-                    {q:"苦手な人との接し方は？",hint:"「こう工夫して接します」と対処法を。"},
-                    {q:"最後に一言ありますか？",hint:"熱意を伝えるラストチャンス！"}
-                ],
-                university: [
-                    {q:"本学を志望した理由は？",hint:"アドミッションポリシーと絡めて話そう。"},
-                    {q:"高校時代に力を入れたことは？",hint:"困難→工夫→解決→学び の流れで。"},
-                    {q:"入学後、何を学びたい？",hint:"具体的な授業名やゼミ名を出そう。"},
-                    {q:"自己PRをお願いします。",hint:"結論→根拠→結論のサンドイッチ法で。"},
-                    {q:"将来のキャリアプランは？",hint:"大学での学びがどう仕事に活きるか。"},
-                    {q:"長所をどう活かす？",hint:"「協調性でチームをまとめる」など。"},
-                    {q:"関心のある社会問題は？",hint:"志望学部に関連する話題を選ぼう。"},
-                    {q:"高校の成績について。",hint:"良い点は継続、悪い点は改善の意思を。"},
-                    {q:"オープンキャンパスの感想は？",hint:"雰囲気や設備の印象を具体的に。"},
-                    {q:"リーダー経験はありますか？",hint:"サポート役でも貢献度を話せばOK。"},
-                    {q:"ストレス解消法は？",hint:"自己管理能力があるか見られている。"},
-                    {q:"座右の銘は？",hint:"その言葉を選んだ体験談を添えて。"},
-                    {q:"併願校とその理由は？",hint:"選ぶ「軸」がブレていないか確認。"},
-                    {q:"大学と高校の違いは？",hint:"「自主性」がキーワード。"},
-                    {q:"卒論のテーマは考えてる？",hint:"現時点での興味関心でOK。"},
-                    {q:"最近感動したことは？",hint:"豊かな感性があるか。"},
-                    {q:"意見が割れたらどうする？",hint:"話し合いで解決する姿勢。"},
-                    {q:"ボランティア経験は？",hint:"社会貢献への意識。"},
-                    {q:"あなたにとって教養とは？",hint:"知識＋人間性。"},
-                    {q:"最後に質問は？",hint:"意欲を見せる質問を一つ用意しよう。"}
-                ],
-                job: [
-                    {q:"当社を志望した理由は？",hint:"「好き」＋「貢献できること」。"},
-                    {q:"ガクチカを教えてください。",hint:"数値を使って具体的に成果を示そう。"},
-                    {q:"強みと弱みは？",hint:"弱みは対策とセットで話すこと。"},
-                    {q:"入社後にやりたい仕事は？",hint:"会社の事業を理解しているか確認。"},
-                    {q:"アルバイト経験は？",hint:"働く姿勢や身につけたスキルを。"},
-                    {q:"逆質問はありますか？",hint:"働く意欲が伝わる質問を。"},
-                    {q:"5年後のビジョンは？",hint:"長く働く意思があるか。"},
-                    {q:"周りの評価は？",hint:"自己評価とのズレがないか。"},
-                    {q:"挫折経験はありますか？",hint:"そこからどう立ち直ったかが大事。"},
-                    {q:"苦手な人への対応は？",hint:"組織で働く上での協調性。"},
-                    {q:"気になるニュースは？",hint:"業界関連だと勉強熱心に見える。"},
-                    {q:"仕事とは何ですか？",hint:"お金以外の価値観を。"},
-                    {q:"集団での役割は？",hint:"リーダー、調整役など。"},
-                    {q:"他社の選考状況は？",hint:"一貫性があれば正直に答えてOK。"},
-                    {q:"当社の製品の印象は？",hint:"ユーザー目線＋改善提案があれば◎。"},
-                    {q:"学業以外で没頭したことは？",hint:"集中力のアピール。"},
-                    {q:"勤務地の希望は？",hint:"柔軟な姿勢を見せよう。"},
-                    {q:"体調管理で気をつけていることは？",hint:"社会人の基本ができているか。"},
-                    {q:"親の了承は得ていますか？",hint:"内定辞退の防止確認。"},
-                    {q:"自己PRをお願いします。",hint:"求める人物像にマッチさせて。"}
-                ]
-            }
+        const DB={questions:{highschool:[{q:"志望動機を教えてください。",hint:"「なぜこの学校か」＋「入学後やりたいこと」"},{q:"中学校で一番頑張ったことは？",hint:"部活や行事。結果よりプロセスを大切に。"},{q:"あなたの長所と短所は？",hint:"長所はエピソードで。短所は改善策も。"},{q:"最近気になるニュースは？",hint:"自分の意見を一言添えるのがポイント。"},{q:"将来の夢はありますか？",hint:"高校生活とどう繋がるか話そう。"},{q:"本校の校則についてどう思いますか？",hint:"社会のルールを守る姿勢を見せる。"},{q:"得意教科・苦手教科は？",hint:"苦手なものへの取り組み方を話そう。"},{q:"休日の過ごし方は？",hint:"趣味や勉強などメリハリをアピール。"},{q:"通学経路と時間は？",hint:"正確に。代替手段も言えるとベスト。"},{q:"最近読んだ本は？",hint:"漫画以外推奨。感想を簡単に。"},{q:"尊敬する人は？",hint:"「なぜ尊敬するか」の理由が重要。"},{q:"友人からどう言われますか？",hint:"客観的な自己分析ができているか。"},{q:"自己PRを1分で。",hint:"強みを一つに絞って熱意を込めよう。"},{q:"卒業後の進路は？",hint:"未定でも「探していきたい」と前向きに。"},{q:"入りたい部活は？",hint:"勉強との両立も含めて話そう。"},{q:"最近怒ったことは？",hint:"感情のコントロール力が見られている。"},{q:"あなたの宝物は？",hint:"大切にしている価値観を伝えよう。"},{q:"苦手な人との接し方は？",hint:"「こう工夫して接します」と対処法を。"},{q:"最後に一言ありますか？",hint:"熱意を伝えるラストチャンス！"}],university:[{q:"本学を志望した理由は？",hint:"アドミッションポリシーと絡めて話そう。"},{q:"高校時代に力を入れたことは？",hint:"困難→工夫→解決→学び の流れで。"},{q:"入学後、何を学びたい？",hint:"具体的な授業名やゼミ名を出そう。"},{q:"自己PRをお願いします。",hint:"結論→根拠→結論のサンドイッチ法で。"},{q:"将来のキャリアプランは？",hint:"大学での学びがどう仕事に活きるか。"},{q:"長所をどう活かす？",hint:"「協調性でチームをまとめる」など。"},{q:"関心のある社会問題は？",hint:"志望学部に関連する話題を選ぼう。"},{q:"高校の成績について。",hint:"良い点は継続、悪い点は改善の意思を。"},{q:"オープンキャンパスの感想は？",hint:"雰囲気や設備の印象を具体的に。"},{q:"リーダー経験はありますか？",hint:"サポート役でも貢献度を話せばOK。"},{q:"ストレス解消法は？",hint:"自己管理能力があるか見られている。"},{q:"座右の銘は？",hint:"その言葉を選んだ体験談を添えて。"},{q:"併願校とその理由は？",hint:"選ぶ「軸」がブレていないか確認。"},{q:"大学と高校の違いは？",hint:"「自主性」がキーワード。"},{q:"卒論のテーマは考えてる？",hint:"現時点での興味関心でOK。"},{q:"最近感動したことは？",hint:"豊かな感性があるか。"},{q:"意見が割れたらどうする？",hint:"話し合いで解決する姿勢。"},{q:"ボランティア経験は？",hint:"社会貢献への意識。"},{q:"あなたにとって教養とは？",hint:"知識＋人間性。"},{q:"最後に質問は？",hint:"意欲を見せる質問を一つ用意しよう。"}],job:[{q:"当社を志望した理由は？",hint:"「好き」＋「貢献できること」。"},{q:"ガクチカを教えてください。",hint:"数値を使って具体的に成果を示そう。"},{q:"強みと弱みは？",hint:"弱みは対策とセットで話すこと。"},{q:"入社後にやりたい仕事は？",hint:"会社の事業を理解しているか確認。"},{q:"アルバイト経験は？",hint:"働く姿勢や身につけたスキルを。"},{q:"逆質問はありますか？",hint:"働く意欲が伝わる質問を。"},{q:"5年後のビジョンは？",hint:"長く働く意思があるか。"},{q:"周りの評価は？",hint:"自己評価とのズレがないか。"},{q:"挫折経験はありますか？",hint:"そこからどう立ち直ったかが大事。"},{q:"苦手な人への対応は？",hint:"組織で働く上での協調性。"},{q:"気になるニュースは？",hint:"業界関連だと勉強熱心に見える。"},{q:"仕事とは何ですか？",hint:"お金以外の価値観を。"},{q:"集団での役割は？",hint:"リーダー、調整役など。"},{q:"他社の選考状況は？",hint:"一貫性があれば正直に答えてOK。"},{q:"当社の製品の印象は？",hint:"ユーザー目線＋改善提案があれば◎。"},{q:"学業以外で没頭したことは？",hint:"集中力のアピール。"},{q:"勤務地の希望は？",hint:"柔軟な姿勢を見せよう。"},{q:"体調管理で気をつけていることは？",hint:"社会人の基本ができているか。"},{q:"親の了承は得ていますか？",hint:"内定辞退の防止確認。"},{q:"自己PRをお願いします。",hint:"求める人物像にマッチさせて。"}]}};
+        const State={mode:'voice',limit:10,speed:1.0,course:'',deck:[],currentQ:null,count:0,results:[],mediaRecorder:null,timer:null,sec:0,utterance:null,voice:null,userQuestions:[],history:[],deferredPrompt:null};
+        const Utils={storage:{get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch{return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){console.warn(e)}}},toast:(msg)=>{const c=document.getElementById('toast-container');const t=document.createElement('div');t.className='toast';t.innerText=msg;c.appendChild(t);void t.offsetWidth;t.classList.add('show');setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300)},2000)},createConfetti:()=>{const c=document.getElementById('confetti-canvas');const ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const p=[];const clr=['#38BDF8','#FACC15','#F472B6','#4ADE80'];for(let i=0;i<100;i++){p.push({x:Math.random()*c.width,y:Math.random()*c.height-c.height,color:clr[Math.floor(Math.random()*clr.length)],size:Math.random()*8+4,speed:Math.random()*5+2,angle:Math.random()*6.2})}function draw(){ctx.clearRect(0,0,c.width,c.height);p.forEach(pt=>{pt.y+=pt.speed;pt.x+=Math.sin(pt.angle)*2;pt.angle+=0.1;if(pt.y>c.height)pt.y=-20;ctx.fillStyle=pt.color;ctx.fillRect(pt.x,pt.y,pt.size,pt.size)});if(document.getElementById('modal-result').classList.contains('hidden'))return;requestAnimationFrame(draw)}draw()}};
+        
+        const App={
+            init:()=>{
+                State.userQuestions=Utils.storage.get('myQuestions',[]);State.history=Utils.storage.get('history',[]);App.initVoice();
+                if(window.speechSynthesis.onvoiceschanged!==undefined){window.speechSynthesis.onvoiceschanged=App.initVoice}
+                App.renderList();App.renderHistory();App.checkStreak();
+                document.addEventListener('visibilitychange',()=>{if(document.hidden){window.speechSynthesis.cancel();clearInterval(State.timer)}});
+                if(!navigator.mediaDevices||!window.MediaRecorder){document.getElementById('btn-rec').classList.add('hidden');document.getElementById('mic-error').classList.remove('hidden')}
+                window.addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();State.deferredPrompt=e;document.getElementById('btn-install').classList.remove('hidden');document.getElementById('btn-manual-install').classList.add('hidden')});
+            },
+            installPWA:async()=>{if(State.deferredPrompt){State.deferredPrompt.prompt();const {outcome}=await State.deferredPrompt.userChoice;if(outcome==='accepted'){State.deferredPrompt=null;document.getElementById('btn-install').classList.add('hidden')}}},
+            initVoice:()=>{const voices=window.speechSynthesis.getVoices();const jpVoices=voices.filter(v=>v.lang.includes('ja'));if(jpVoices.length>0){State.voice=jpVoices.find(v=>v.name.includes('Google'))||jpVoices.find(v=>v.name.includes('Microsoft'))||jpVoices[0]}},
+            switchTab:(id)=>{['home','list','history'].forEach(t=>{document.getElementById(`tab-${t}`).classList.add('hidden');const n=document.getElementById(`nav-${t}`);n.classList.remove('tab-active');n.classList.add('tab-inactive')});document.getElementById(`tab-${id}`).classList.remove('hidden');const a=document.getElementById(`nav-${id}`);a.classList.remove('tab-inactive');a.classList.add('tab-active');if(id==='list')App.renderList();if(id==='history')App.renderHistory()},
+            setMode:(m)=>{State.mode=m;const v=document.getElementById('mode-btn-voice'),s=document.getElementById('mode-btn-silent');if(m==='voice'){v.className="flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-brand shadow-sm transition-all";s.className="flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all"}else{v.className="flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all";s.className="flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-emerald-500 shadow-sm transition-all"}},
+            setCount:(n)=>{State.limit=n;document.getElementById('label-limit').innerText=n===999?'無限':`${n}問`;[5,10,999].forEach(x=>{const b=document.getElementById(`count-btn-${x}`);b.className=x===n?"flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-brand shadow-sm transition-all":"flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all"})},
+            setSpeed:(v)=>{State.speed=parseFloat(v);document.getElementById('label-speed').innerText=v},
+            preStartCheck:(c)=>{State.course=c;const t=new Date().toDateString();if(Utils.storage.get('lastMannerCheck','')===t){App.startPractice()}else{document.getElementById('modal-manner').classList.remove('hidden');Utils.storage.set('lastMannerCheck',t)}},
+            startPractice:()=>{document.getElementById('modal-manner').classList.add('hidden');document.getElementById('view-practice').classList.remove('hidden');document.getElementById('start-overlay').classList.remove('hidden');document.getElementById('start-msg').innerText=State.mode==='voice'?"音が出ます。音量に注意してね！":"電車モードです。音は出ません。";State.count=0;State.results=[];State.deck=[];if(State.course==='custom'){State.deck=[...State.userQuestions];if(State.deck.length===0){alert("My質問がありません。リストタブから追加してください。");App.quit();return}}else{State.deck=[...DB.questions[State.course]]}},
+            realStart:()=>{window.speechSynthesis.cancel();document.getElementById('start-overlay').classList.add('hidden');App.updateCounter();App.nextQuestion()},
+            nextQuestion:()=>{if((State.course!=='custom'&&State.limit!==999&&State.deck.length===0)||State.count>=State.limit){App.showResult();return}if(State.limit===999&&State.deck.length===0){State.deck=[...(State.course==='custom'?State.userQuestions:DB.questions[State.course])]}App.resetUI();const i=Math.floor(Math.random()*State.deck.length);State.currentQ=State.deck[i];State.deck.splice(i,1);App.updateCounter();document.getElementById('question-text').innerText=State.currentQ.q;document.getElementById('hint-text').innerText=State.currentQ.hint||"なし";if(State.mode==='voice')App.speak();App.startTimer()},
+            resetUI:()=>{document.getElementById('hint-box').classList.add('hidden');document.getElementById('btn-hint').classList.remove('hidden');document.getElementById('ctrl-answer').classList.remove('hidden');document.getElementById('ctrl-rate').classList.add('hidden');document.getElementById('player-area').classList.add('hidden');document.querySelectorAll('.btn-rate').forEach(b=>b.disabled=false);['btn-rec','btn-stop','btn-silent','btn-speak'].forEach(i=>document.getElementById(i).classList.add('hidden'));if(State.mode==='voice'){if(navigator.mediaDevices&&window.MediaRecorder){document.getElementById('btn-rec').classList.remove('hidden')}else{document.getElementById('btn-silent').classList.remove('hidden')}document.getElementById('btn-speak').classList.remove('hidden')}else{document.getElementById('btn-silent').classList.remove('hidden')}},
+            speak:()=>{window.speechSynthesis.cancel();State.utterance=new SpeechSynthesisUtterance(State.currentQ.q);State.utterance.lang="ja-JP";State.utterance.rate=State.speed;if(State.voice)State.utterance.voice=State.voice;window.speechSynthesis.speak(State.utterance)},
+            toggleRecord:async()=>{if(!State.mediaRecorder||State.mediaRecorder.state==='inactive'){try{window.speechSynthesis.cancel();const s=await navigator.mediaDevices.getUserMedia({audio:true});State.mediaRecorder=new MediaRecorder(s);let c=[];State.mediaRecorder.ondataavailable=e=>c.push(e.data);State.mediaRecorder.onstop=()=>{const type=State.mediaRecorder.mimeType||'audio/webm';const b=new Blob(c,{type:type});document.getElementById('audio-player').src=URL.createObjectURL(b);document.getElementById('player-area').classList.remove('hidden');App.toRatingPhase();s.getTracks().forEach(t=>t.stop())};State.mediaRecorder.start();document.getElementById('btn-rec').classList.add('hidden');document.getElementById('btn-stop').classList.remove('hidden')}catch(e){console.error(e);document.getElementById('mic-error').classList.remove('hidden')}}else{State.mediaRecorder.stop();document.getElementById('btn-stop').classList.add('hidden')}},
+            finishAnswer:()=>{App.toRatingPhase()},
+            toRatingPhase:()=>{clearInterval(State.timer);window.speechSynthesis.cancel();document.getElementById('ctrl-answer').classList.add('hidden');document.getElementById('ctrl-rate').classList.remove('hidden')},
+            saveResult:(s)=>{document.querySelectorAll('.btn-rate').forEach(b=>b.disabled=true);State.count++;State.results.push(s);State.history.unshift({q:State.currentQ.q,score:s,date:new Date().toLocaleDateString()});if(State.history.length>50)State.history.pop();Utils.storage.set('history',State.history);setTimeout(App.nextQuestion,400)},
+            quit:()=>{clearInterval(State.timer);window.speechSynthesis.cancel();if(State.mediaRecorder&&State.mediaRecorder.state==='recording'){State.mediaRecorder.stop()}document.getElementById('view-practice').classList.add('hidden');App.renderHistory()},
+            checkStreak:()=>{const t=new Date().toDateString(),l=Utils.storage.get('lastVisit','');let s=Utils.storage.get('streak',0);if(l){const d=(new Date(t)-new Date(l))/(1000*60*60*24);if(d>=1&&d<2)s++;else if(d>=2)s=1}else{s=1}Utils.storage.set('lastVisit',t);Utils.storage.set('streak',s);if(s>1){document.getElementById('streak-count').innerText=s;document.getElementById('streak-badge').classList.remove('hidden')}},
+            showResult:()=>{window.speechSynthesis.cancel();document.getElementById('view-practice').classList.add('hidden');document.getElementById('modal-result').classList.remove('hidden');const n=State.results.length,a=n>0?(State.results.reduce((x,y)=>x+y,0)/n):0;document.getElementById('res-count').innerText=n;let m="Nice Try!";if(a>=4.5)m="Excellent! 完璧です✨";else if(a>=3.5)m="Great! 自信を持って👍";else if(n>0)m="Good! その調子🔥";document.getElementById('res-msg').innerText=m;Utils.createConfetti()},
+            closeResult:()=>{document.getElementById('modal-result').classList.add('hidden');App.renderHistory()},
+            toggleHint:()=>{document.getElementById('hint-box').classList.remove('hidden');document.getElementById('btn-hint').classList.add('hidden')},
+            startTimer:()=>{State.sec=0;document.getElementById('timer-display').innerText="00:00";clearInterval(State.timer);State.timer=setInterval(()=>{State.sec++;const m=String(Math.floor(State.sec/60)).padStart(2,'0'),s=String(State.sec%60).padStart(2,'0');document.getElementById('timer-display').innerText=`${m}:${s}`},1000)},
+            updateCounter:()=>{const t=State.limit===999?"∞":State.limit;document.getElementById('q-counter').innerText=`${State.count+1}/${t}問`},
+            renderList:()=>{const c=document.getElementById('questions-list-container');c.innerHTML="";if(State.userQuestions.length>0){const h=document.createElement('div');h.className="text-xs font-bold text-purple-500 mt-4 mb-2 ml-1";h.innerText="★ My質問";c.appendChild(h);State.userQuestions.forEach((q,i)=>{const e=document.createElement('div');e.className="bg-white p-4 rounded-xl border border-purple-100 flex justify-between items-center shadow-sm mb-2";e.innerHTML=`<div><p class="font-bold text-sm text-slate-700">${q.q}</p><p class="text-xs text-slate-400 mt-1">ヒント: ${q.hint||'-'}</p></div><button onclick="UserData.remove(${i})" class="text-red-400 text-xs font-bold border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50">削除</button>`;c.appendChild(e)})}['highschool','university','job'].forEach(cat=>{const h=document.createElement('div');h.className="text-xs font-bold text-slate-400 mt-6 mb-2 ml-1 uppercase";h.innerText=cat;c.appendChild(h);DB.questions[cat].forEach(q=>{const e=document.createElement('div');e.className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-2";const rel=State.history.filter(h=>h.q===q.q);let b="";if(rel.length>0){const a=rel.reduce((x,y)=>x+y.score,0)/rel.length;if(a<2.5)b=`<span class="bg-red-100 text-red-500 text-[10px] px-2 py-0.5 rounded-md font-bold ml-2">⚠️ 苦手</span>`;else if(a>=4.5)b=`<span class="bg-yellow-100 text-yellow-600 text-[10px] px-2 py-0.5 rounded-md font-bold ml-2">👑 得意</span>`}e.innerHTML=`<p class="font-bold text-sm text-slate-700 flex items-center">${q.q}${b}</p><p class="text-xs text-slate-400 mt-1">💡 ${q.hint}</p>`;c.appendChild(e)})})},
+            renderHistory:()=>{const l=document.getElementById('history-list');l.innerHTML="";if(State.history.length===0){l.innerHTML='<div class="p-8 text-center text-xs text-slate-400">まだ履歴がありません</div>';document.getElementById('stat-count').innerText="0";document.getElementById('stat-avg').innerText="-";return}const a=State.history.reduce((x,y)=>x+y.score,0)/State.history.length;document.getElementById('stat-count').innerText=State.history.length;document.getElementById('stat-avg').innerText=a.toFixed(1);State.history.forEach(h=>{const e=document.createElement('div');e.className="p-4 flex justify-between items-center hover:bg-slate-50 transition";let f=h.score===1?'😖':(h.score===3?'😐':'😆'),c=h.score===1?'text-slate-400':(h.score===3?'text-slate-500':'text-yellow-500');e.innerHTML=`<div class="flex-1 min-w-0 pr-4"><p class="text-sm font-bold text-slate-700 truncate">${h.q}</p><p class="text-[10px] text-slate-400 mt-0.5">${h.date}</p></div><div class="text-2xl ${c}">${f}</div>`;l.appendChild(e)})}
         };
-
-        /**
-         * Global State Management
-         */
-        const State = {
-            mode: 'voice',
-            limit: 10,
-            speed: 1.0,
-            course: '',
-            deck: [],
-            currentQ: null,
-            count: 0,
-            results: [],
-            mediaRecorder: null,
-            timer: null,
-            sec: 0,
-            utterance: null,
-            voice: null,
-            userQuestions: [],
-            history: []
-        };
-
-        /**
-         * Utilities
-         */
-        const Utils = {
-            storage: {
-                get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d } catch { return d } },
-                set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) { console.warn(e) } }
-            },
-            toast: (msg) => {
-                const c = document.getElementById('toast-container');
-                const t = document.createElement('div');
-                t.className = 'toast';
-                t.innerText = msg;
-                c.appendChild(t);
-                // Trigger reflow
-                void t.offsetWidth;
-                t.classList.add('show');
-                setTimeout(() => {
-                    t.classList.remove('show');
-                    setTimeout(() => t.remove(), 300);
-                }, 2000);
-            },
-            createConfetti: () => {
-                const c = document.getElementById('confetti-canvas');
-                const ctx = c.getContext('2d');
-                c.width = window.innerWidth;
-                c.height = window.innerHeight;
-                const p = [];
-                const clr = ['#38BDF8', '#FACC15', '#F472B6', '#4ADE80'];
-                for (let i = 0; i < 100; i++) {
-                    p.push({
-                        x: Math.random() * c.width,
-                        y: Math.random() * c.height - c.height,
-                        color: clr[Math.floor(Math.random() * clr.length)],
-                        size: Math.random() * 8 + 4,
-                        speed: Math.random() * 5 + 2,
-                        angle: Math.random() * 6.2
-                    })
-                }
-                function draw() {
-                    ctx.clearRect(0, 0, c.width, c.height);
-                    p.forEach(pt => {
-                        pt.y += pt.speed;
-                        pt.x += Math.sin(pt.angle) * 2;
-                        pt.angle += 0.1;
-                        if (pt.y > c.height) pt.y = -20;
-                        ctx.fillStyle = pt.color;
-                        ctx.fillRect(pt.x, pt.y, pt.size, pt.size)
-                    });
-                    if(document.getElementById('modal-result').classList.contains('hidden')) return;
-                    requestAnimationFrame(draw)
-                }
-                draw()
-            }
-        };
-
-        /**
-         * Core Application Logic
-         */
-        const App = {
-            init: () => {
-                State.userQuestions = Utils.storage.get('myQuestions', []);
-                State.history = Utils.storage.get('history', []);
-                
-                // Initialize TTS Voice
-                App.initVoice();
-                if (window.speechSynthesis.onvoiceschanged !== undefined) {
-                    window.speechSynthesis.onvoiceschanged = App.initVoice;
-                }
-
-                App.renderList();
-                App.renderHistory();
-                App.checkStreak();
-                
-                // Stop timer on background
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) {
-                        window.speechSynthesis.cancel();
-                        clearInterval(State.timer);
-                    }
-                });
-
-                // Check MediaRecorder support
-                if (!navigator.mediaDevices || !window.MediaRecorder) {
-                    document.getElementById('btn-rec').classList.add('hidden');
-                    document.getElementById('mic-error').classList.remove('hidden');
-                }
-            },
-
-            initVoice: () => {
-                const voices = window.speechSynthesis.getVoices();
-                // Prefer Japanese voices, then prioritize Google or Microsoft high quality ones
-                const jpVoices = voices.filter(v => v.lang.includes('ja'));
-                if (jpVoices.length > 0) {
-                    State.voice = jpVoices.find(v => v.name.includes('Google')) || jpVoices.find(v => v.name.includes('Microsoft')) || jpVoices[0];
-                }
-            },
-
-            switchTab: (id) => {
-                ['home', 'list', 'history'].forEach(t => {
-                    document.getElementById(`tab-${t}`).classList.add('hidden');
-                    const n = document.getElementById(`nav-${t}`);
-                    n.classList.remove('tab-active');
-                    n.classList.add('tab-inactive');
-                });
-                document.getElementById(`tab-${id}`).classList.remove('hidden');
-                const a = document.getElementById(`nav-${id}`);
-                a.classList.remove('tab-inactive');
-                a.classList.add('tab-active');
-                if (id === 'list') App.renderList();
-                if (id === 'history') App.renderHistory();
-            },
-
-            setMode: (m) => {
-                State.mode = m;
-                const v = document.getElementById('mode-btn-voice');
-                const s = document.getElementById('mode-btn-silent');
-                if (m === 'voice') {
-                    v.className = "flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-brand shadow-sm transition-all";
-                    s.className = "flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all";
-                } else {
-                    v.className = "flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all";
-                    s.className = "flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-emerald-500 shadow-sm transition-all";
-                }
-            },
-
-            setCount: (n) => {
-                State.limit = n;
-                document.getElementById('label-limit').innerText = n === 999 ? '無限' : `${n}問`;
-                [5, 10, 999].forEach(x => {
-                    const b = document.getElementById(`count-btn-${x}`);
-                    b.className = x === n 
-                        ? "flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-brand shadow-sm transition-all"
-                        : "flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all";
-                });
-            },
-
-            setSpeed: (v) => {
-                State.speed = parseFloat(v);
-                document.getElementById('label-speed').innerText = v;
-            },
-
-            preStartCheck: (c) => {
-                State.course = c;
-                const t = new Date().toDateString();
-                // Show manner check only once per day
-                if (Utils.storage.get('lastMannerCheck', '') === t) {
-                    App.startPractice();
-                } else {
-                    document.getElementById('modal-manner').classList.remove('hidden');
-                    Utils.storage.set('lastMannerCheck', t);
-                }
-            },
-
-            startPractice: () => {
-                document.getElementById('modal-manner').classList.add('hidden');
-                document.getElementById('view-practice').classList.remove('hidden');
-                document.getElementById('start-overlay').classList.remove('hidden');
-                
-                // Customize start message based on mode
-                document.getElementById('start-msg').innerText = State.mode === 'voice' 
-                    ? "音が出ます。音量に注意してね！" 
-                    : "電車モードです。音は出ません。";
-                
-                State.count = 0;
-                State.results = [];
-                State.deck = [];
-                if (State.course === 'custom') {
-                    State.deck = [...State.userQuestions];
-                    if (State.deck.length === 0) {
-                        alert("My質問がありません。リストタブから追加してください。");
-                        App.quit();
-                        return;
-                    }
-                } else {
-                    State.deck = [...DB.questions[State.course]];
-                }
-            },
-
-            realStart: () => {
-                // Initialize Audio Context concept by user interaction
-                window.speechSynthesis.cancel();
-                document.getElementById('start-overlay').classList.add('hidden');
-                App.updateCounter();
-                App.nextQuestion();
-            },
-
-            nextQuestion: () => {
-                // Check if finished
-                if ((State.course !== 'custom' && State.limit !== 999 && State.deck.length === 0) || State.count >= State.limit) {
-                    App.showResult();
-                    return;
-                }
-                // Refill deck if infinite mode
-                if (State.limit === 999 && State.deck.length === 0) {
-                    State.deck = [...(State.course === 'custom' ? State.userQuestions : DB.questions[State.course])];
-                }
-
-                App.resetUI();
-                
-                // Random Pick
-                const i = Math.floor(Math.random() * State.deck.length);
-                State.currentQ = State.deck[i];
-                State.deck.splice(i, 1);
-                
-                App.updateCounter();
-                document.getElementById('question-text').innerText = State.currentQ.q;
-                document.getElementById('hint-text').innerText = State.currentQ.hint || "なし";
-                
-                if (State.mode === 'voice') App.speak();
-                App.startTimer();
-            },
-
-            resetUI: () => {
-                document.getElementById('hint-box').classList.add('hidden');
-                document.getElementById('btn-hint').classList.remove('hidden');
-                document.getElementById('ctrl-answer').classList.remove('hidden');
-                document.getElementById('ctrl-rate').classList.add('hidden');
-                document.getElementById('player-area').classList.add('hidden');
-                document.querySelectorAll('.btn-rate').forEach(b => b.disabled = false);
-                
-                ['btn-rec', 'btn-stop', 'btn-silent', 'btn-speak'].forEach(i => document.getElementById(i).classList.add('hidden'));
-                
-                if (State.mode === 'voice') {
-                    if (navigator.mediaDevices && window.MediaRecorder) {
-                        document.getElementById('btn-rec').classList.remove('hidden');
-                    } else {
-                        // Fallback if no mic support
-                        document.getElementById('btn-silent').classList.remove('hidden');
-                    }
-                    document.getElementById('btn-speak').classList.remove('hidden');
-                } else {
-                    document.getElementById('btn-silent').classList.remove('hidden');
-                }
-            },
-
-            speak: () => {
-                window.speechSynthesis.cancel();
-                State.utterance = new SpeechSynthesisUtterance(State.currentQ.q);
-                State.utterance.lang = "ja-JP";
-                State.utterance.rate = State.speed; // Apply speed setting
-                if (State.voice) State.utterance.voice = State.voice;
-                window.speechSynthesis.speak(State.utterance);
-            },
-
-            toggleRecord: async () => {
-                if (!State.mediaRecorder || State.mediaRecorder.state === 'inactive') {
-                    try {
-                        window.speechSynthesis.cancel();
-                        const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-                        State.mediaRecorder = new MediaRecorder(s);
-                        let c = [];
-                        
-                        State.mediaRecorder.ondataavailable = e => c.push(e.data);
-                        State.mediaRecorder.onstop = () => {
-                            // Support various mime types for iOS/Android
-                            const type = State.mediaRecorder.mimeType || 'audio/webm';
-                            const b = new Blob(c, { type: type });
-                            const audioUrl = URL.createObjectURL(b);
-                            document.getElementById('audio-player').src = audioUrl;
-                            document.getElementById('player-area').classList.remove('hidden');
-                            App.toRatingPhase();
-                            s.getTracks().forEach(t => t.stop());
-                        };
-                        
-                        State.mediaRecorder.start();
-                        document.getElementById('btn-rec').classList.add('hidden');
-                        document.getElementById('btn-stop').classList.remove('hidden');
-                    } catch (e) {
-                        alert("マイクへのアクセスが拒否されたか、対応していません。\n設定を確認してください。");
-                        console.error(e);
-                    }
-                } else {
-                    State.mediaRecorder.stop();
-                    document.getElementById('btn-stop').classList.add('hidden');
-                }
-            },
-
-            finishAnswer: () => {
-                App.toRatingPhase();
-            },
-
-            toRatingPhase: () => {
-                clearInterval(State.timer);
-                window.speechSynthesis.cancel();
-                document.getElementById('ctrl-answer').classList.add('hidden');
-                document.getElementById('ctrl-rate').classList.remove('hidden');
-            },
-
-            saveResult: (s) => {
-                document.querySelectorAll('.btn-rate').forEach(b => b.disabled = true);
-                State.count++;
-                State.results.push(s);
-                State.history.unshift({ q: State.currentQ.q, score: s, date: new Date().toLocaleDateString() });
-                
-                if (State.history.length > 50) State.history.pop();
-                Utils.storage.set('history', State.history);
-                
-                // Small delay to show selection feedback
-                setTimeout(App.nextQuestion, 400);
-            },
-
-            quit: () => {
-                clearInterval(State.timer);
-                window.speechSynthesis.cancel();
-                if (State.mediaRecorder && State.mediaRecorder.state === 'recording') {
-                    State.mediaRecorder.stop();
-                }
-                document.getElementById('view-practice').classList.add('hidden');
-                App.renderHistory();
-            },
-
-            checkStreak: () => {
-                const t = new Date().toDateString();
-                const l = Utils.storage.get('lastVisit', '');
-                let s = Utils.storage.get('streak', 0);
-                
-                if (l) {
-                    const d = (new Date(t) - new Date(l)) / (1000 * 60 * 60 * 24);
-                    if (d >= 1 && d < 2) s++; // Consecutive day
-                    else if (d >= 2) s = 1; // Broken streak
-                } else {
-                    s = 1;
-                }
-                Utils.storage.set('lastVisit', t);
-                Utils.storage.set('streak', s);
-                
-                if (s > 1) {
-                    document.getElementById('streak-count').innerText = s;
-                    document.getElementById('streak-badge').classList.remove('hidden');
-                }
-            },
-
-            showResult: () => {
-                window.speechSynthesis.cancel();
-                document.getElementById('view-practice').classList.add('hidden');
-                document.getElementById('modal-result').classList.remove('hidden');
-                
-                const n = State.results.length;
-                const a = n > 0 ? (State.results.reduce((x, y) => x + y, 0) / n) : 0;
-                
-                document.getElementById('res-count').innerText = n;
-                let m = "Nice Try!";
-                if (a >= 4.5) m = "Excellent! 完璧です✨";
-                else if (a >= 3.5) m = "Great! 自信を持って👍";
-                else if (n > 0) m = "Good! その調子🔥";
-                document.getElementById('res-msg').innerText = m;
-                
-                Utils.createConfetti();
-            },
-
-            closeResult: () => {
-                document.getElementById('modal-result').classList.add('hidden');
-                App.renderHistory();
-            },
-
-            toggleHint: () => {
-                document.getElementById('hint-box').classList.remove('hidden');
-                document.getElementById('btn-hint').classList.add('hidden');
-            },
-
-            startTimer: () => {
-                State.sec = 0;
-                document.getElementById('timer-display').innerText = "00:00";
-                clearInterval(State.timer);
-                State.timer = setInterval(() => {
-                    State.sec++;
-                    const m = String(Math.floor(State.sec / 60)).padStart(2, '0');
-                    const s = String(State.sec % 60).padStart(2, '0');
-                    document.getElementById('timer-display').innerText = `${m}:${s}`;
-                }, 1000);
-            },
-
-            updateCounter: () => {
-                const t = State.limit === 999 ? "∞" : State.limit;
-                document.getElementById('q-counter').innerText = `${State.count + 1}/${t}問`;
-            },
-
-            renderList: () => {
-                const c = document.getElementById('questions-list-container');
-                c.innerHTML = "";
-                
-                // Render My Questions
-                if (State.userQuestions.length > 0) {
-                    const h = document.createElement('div');
-                    h.className = "text-xs font-bold text-purple-500 mt-4 mb-2 ml-1";
-                    h.innerText = "★ My質問";
-                    c.appendChild(h);
-                    
-                    State.userQuestions.forEach((q, i) => {
-                        const e = document.createElement('div');
-                        e.className = "bg-white p-4 rounded-xl border border-purple-100 flex justify-between items-center shadow-sm mb-2";
-                        e.innerHTML = `
-                            <div>
-                                <p class="font-bold text-sm text-slate-700">${q.q}</p>
-                                <p class="text-xs text-slate-400 mt-1">ヒント: ${q.hint || '-'}</p>
-                            </div>
-                            <button onclick="UserData.remove(${i})" class="text-red-400 text-xs font-bold border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50">削除</button>
-                        `;
-                        c.appendChild(e);
-                    });
-                }
-                
-                // Render Default Categories
-                ['highschool', 'university', 'job'].forEach(cat => {
-                    const h = document.createElement('div');
-                    h.className = "text-xs font-bold text-slate-400 mt-6 mb-2 ml-1 uppercase";
-                    h.innerText = cat;
-                    c.appendChild(h);
-                    
-                    DB.questions[cat].forEach(q => {
-                        const e = document.createElement('div');
-                        e.className = "bg-slate-50 p-4 rounded-xl border border-slate-100 mb-2";
-                        
-                        // Analysis tags
-                        const rel = State.history.filter(h => h.q === q.q);
-                        let b = "";
-                        if (rel.length > 0) {
-                            const a = rel.reduce((x, y) => x + y.score, 0) / rel.length;
-                            if (a < 2.5) b = `<span class="bg-red-100 text-red-500 text-[10px] px-2 py-0.5 rounded-md font-bold ml-2">⚠️ 苦手</span>`;
-                            else if (a >= 4.5) b = `<span class="bg-yellow-100 text-yellow-600 text-[10px] px-2 py-0.5 rounded-md font-bold ml-2">👑 得意</span>`;
-                        }
-                        
-                        e.innerHTML = `<p class="font-bold text-sm text-slate-700 flex items-center">${q.q}${b}</p><p class="text-xs text-slate-400 mt-1">💡 ${q.hint}</p>`;
-                        c.appendChild(e);
-                    });
-                });
-            },
-
-            renderHistory: () => {
-                const l = document.getElementById('history-list');
-                l.innerHTML = "";
-                
-                if (State.history.length === 0) {
-                    l.innerHTML = '<div class="p-8 text-center text-xs text-slate-400">まだ履歴がありません</div>';
-                    document.getElementById('stat-count').innerText = "0";
-                    document.getElementById('stat-avg').innerText = "-";
-                    return;
-                }
-                
-                const a = State.history.reduce((x, y) => x + y.score, 0) / State.history.length;
-                document.getElementById('stat-count').innerText = State.history.length;
-                document.getElementById('stat-avg').innerText = a.toFixed(1);
-                
-                State.history.forEach(h => {
-                    const e = document.createElement('div');
-                    e.className = "p-4 flex justify-between items-center hover:bg-slate-50 transition";
-                    let f = h.score === 1 ? '😖' : (h.score === 3 ? '😐' : '😆');
-                    let c = h.score === 1 ? 'text-slate-400' : (h.score === 3 ? 'text-slate-500' : 'text-yellow-500');
-                    e.innerHTML = `
-                        <div class="flex-1 min-w-0 pr-4">
-                            <p class="text-sm font-bold text-slate-700 truncate">${h.q}</p>
-                            <p class="text-[10px] text-slate-400 mt-0.5">${h.date}</p>
-                        </div>
-                        <div class="text-2xl ${c}">${f}</div>
-                    `;
-                    l.appendChild(e);
-                });
-            }
-        };
-
-        const UserData = {
-            add: () => {
-                const q = document.getElementById('new-q-text').value.trim();
-                const h = document.getElementById('new-q-hint').value.trim();
-                if (!q) return;
-                State.userQuestions.push({ q: q, hint: h });
-                Utils.storage.set('myQuestions', State.userQuestions);
-                document.getElementById('new-q-text').value = "";
-                document.getElementById('new-q-hint').value = "";
-                App.renderList();
-                Utils.toast("質問を追加しました！");
-            },
-            remove: (i) => {
-                if (!confirm("本当に削除しますか？")) return;
-                State.userQuestions.splice(i, 1);
-                Utils.storage.set('myQuestions', State.userQuestions);
-                App.renderList();
-                Utils.toast("削除しました");
-            },
-            clearHistory: () => {
-                if (!confirm("履歴を全てリセットしますか？この操作は元に戻せません。")) return;
-                State.history = [];
-                Utils.storage.set('history', []);
-                App.renderHistory();
-                App.renderList(); // Update tags
-                Utils.toast("履歴をリセットしました");
-            }
-        };
-
-        const Social = {
-            shareApp: () => {
-                const t = `面接対策アプリ「めんせつ★ノック」\n作成者: 彗眠ネルネ💤 ${CONFIG.ACCOUNTS.X}\n\nスマホで面接練習してみた！`;
-                window.open(`${CONFIG.URLS.X_SHARE}?text=${encodeURIComponent(t)}&url=${encodeURIComponent(location.href)}`, '_blank');
-            },
-            shareResult: () => {
-                const c = State.results.length;
-                if (c === 0) return;
-                const a = State.results.reduce((x, y) => x + y, 0) / c;
-                const t = `【めんせつ★ノック】\n面接練習 ${c}問クリア！\n今回のスコア: ${a.toFixed(1)}/5.0\n\n作成者: 彗眠ネルネ💤 ${CONFIG.ACCOUNTS.X}`;
-                window.open(`${CONFIG.URLS.X_SHARE}?text=${encodeURIComponent(t)}&url=${encodeURIComponent(location.href)}`, '_blank');
-            }
-        };
-
-        window.onload = App.init;
+        const UserData={add:()=>{const q=document.getElementById('new-q-text').value.trim(),h=document.getElementById('new-q-hint').value.trim();if(!q)return;State.userQuestions.push({q:q,hint:h});Utils.storage.set('myQuestions',State.userQuestions);document.getElementById('new-q-text').value="";document.getElementById('new-q-hint').value="";App.renderList();Utils.toast("質問を追加しました！")},remove:(i)=>{if(!confirm("本当に削除しますか？"))return;State.userQuestions.splice(i,1);Utils.storage.set('myQuestions',State.userQuestions);App.renderList();Utils.toast("削除しました")},clearHistory:()=>{if(!confirm("履歴を全てリセットしますか？この操作は元に戻せません。"))return;State.history=[];Utils.storage.set('history',[]);App.renderHistory();App.renderList();Utils.toast("履歴をリセットしました")}};
+        const Social={shareApp:()=>{const t=`面接対策アプリ「めんせつ★ノック」\n作成者: 彗眠ネルネ💤 ${CONFIG.ACCOUNTS.X}\n\nスマホで面接練習してみた！`;window.open(`${CONFIG.URLS.X_SHARE}?text=${encodeURIComponent(t)}&url=${encodeURIComponent(location.href)}`,'_blank')},shareResult:()=>{const c=State.results.length;if(c===0)return;const a=State.results.reduce((x,y)=>x+y,0)/c;const t=`【めんせつ★ノック】\n面接練習 ${c}問クリア！\n今回のスコア: ${a.toFixed(1)}/5.0\n\n作成者: 彗眠ネルネ💤 ${CONFIG.ACCOUNTS.X}`;window.open(`${CONFIG.URLS.X_SHARE}?text=${encodeURIComponent(t)}&url=${encodeURIComponent(location.href)}`,'_blank')}};
+        window.onload=App.init;
     </script>
 </body>
 </html>
