@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ja">
+<!-- 
+  Mensetsu Knock - Interview Practice
+  Version: 3.0.0 (Production Ready)
+  Author: Suimin Nerune
+  License: MIT
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="スキマ時間で面接対策！スマホで完結する練習アプリ">
+    <meta name="theme-color" content="#E0F2FE">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="面接ノック">
+    <link rel="apple-touch-icon" href="./nerune.png">
+    
+    <!-- OGP -->
+    <meta property="og:title" content="めんせつ★ノック">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="./nerune.png">
+    <meta property="og:description" content="1日3分！スマホで完結する面接練習アプリ">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <title>めんせつ★ノック</title>
+    
+    <!-- Libraries (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap" rel="stylesheet">
+    
+    <!-- App Config & Styles -->
+    <script>
+        const CONFIG = {
+            VERSION: '3.0.0',
+            URLS: {
+                YOUTUBE: "https://www.youtube.com/@suimin_nerune",
+                X_SHARE: "https://twitter.com/intent/tweet"
+            },
+            ACCOUNTS: { X: "@suimin_nerune" },
+            THEME: { brand: '#38BDF8', accent: '#FACC15', bg: '#E0F2FE' }
+        };
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { DEFAULT: CONFIG.THEME.brand, dark: '#0284C7', light: '#7DD3FC' },
+                        accent: { DEFAULT: CONFIG.THEME.accent, dark: '#CA8A04' }
+                    },
+                    fontFamily: { sans: ['"M PLUS Rounded 1c"', 'sans-serif', 'system-ui'] },
+                    animation: {
+                        'bounce-sm': 'bounceSm 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        'float': 'float 3s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.3s ease-out forwards',
+                        'fade-in': 'fadeIn 0.2s ease-out forwards',
+                    },
+                    keyframes: {
+                        bounceSm: { '0%': { transform: 'scale(0.9)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root { --safe-bottom: env(safe-area-inset-bottom, 20px); }
+        body {
+            background-color: #E0F2FE;
+            background-image: radial-gradient(#bae6fd 15%, transparent 15%);
+            background-size: 24px 24px;
+            min-height: 100dvh;
+            user-select: none; /* Prevent text selection like native app */
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+        }
+        .btn-3d {
+            transition: transform 0.1s, border-bottom-width 0.1s, filter 0.2s;
+            border-bottom-width: 4px;
+            position: relative;
+            transform: translateY(0);
+            will-change: transform;
+        }
+        .btn-3d:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 2px; }
+        .btn-3d:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); border-bottom-color: #cbd5e1; background-color: #f1f5f9; color: #94a3b8; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .tab-active { color: #38BDF8; stroke: #38BDF8; }
+        .tab-inactive { color: #94a3b8; stroke: #94a3b8; }
+        
+        /* Custom Range Slider */
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #38BDF8; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3); margin-top: -8px; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #cbd5e1; border-radius: 2px; }
+        
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+        
+        /* Toast Notification */
+        #toast-container { position: fixed; bottom: calc(4rem + var(--safe-bottom) + 10px); left: 50%; transform: translateX(-50%); z-index: 100; pointer-events: none; width: 90%; max-width: 300px; }
+        .toast { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(4px); color: white; padding: 10px 16px; border-radius: 99px; font-size: 13px; font-weight: bold; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: translateY(10px); }
+        .toast.show { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="h-[100dvh] w-full overflow-hidden flex flex-col text-slate-700 font-sans">
+
+    <!-- MAIN VIEW -->
+    <main id="main-container" class="flex-1 overflow-y-auto no-scrollbar relative pb-24">
+        
+        <!-- === TAB: HOME === -->
+        <section id="tab-home" class="p-6 flex flex-col items-center min-h-full animate-fade-in">
+            <!-- Streak -->
+            <div id="streak-badge" class="hidden absolute top-4 left-4 bg-white/90 backdrop-blur border border-orange-200 px-3 py-1.5 rounded-full shadow-sm z-10 animate-bounce-sm">
+                <span class="text-lg">🔥</span><span class="text-xs font-black text-orange-500 ml-1">連続 <span id="streak-count">1</span>日目</span>
+            </div>
+
+            <!-- Hero -->
+            <div class="mt-6 mb-6 flex flex-col items-center shrink-0">
+                <div class="relative w-32 h-32 animate-float">
+                    <div class="w-full h-full rounded-full border-[6px] border-white shadow-xl overflow-hidden bg-white relative z-10">
+                        <img src="./nerune.png" onerror="this.src='https://img.icons8.com/fluency/192/microphone.png'" class="w-full h-full object-cover" alt="Character">
+                    </div>
+                    <div class="absolute -bottom-2 -right-2 bg-yellow-400 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm z-20">v3.0</div>
+                </div>
+                <h1 class="mt-5 text-2xl font-extrabold text-brand tracking-wide drop-shadow-sm">めんせつ★ノック</h1>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="w-full max-w-sm bg-white/80 backdrop-blur rounded-2xl p-5 shadow-sm border border-white mb-8 space-y-4">
+                <!-- Mode -->
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block ml-1">練習モード</label>
+                    <div class="flex bg-slate-100 p-1 rounded-xl">
+                        <button onclick="App.setMode('voice')" id="mode-btn-voice" class="flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-brand shadow-sm transition-all duration-200">🎤 声に出す</button>
+                        <button onclick="App.setMode('silent')" id="mode-btn-silent" class="flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all duration-200 hover:text-brand">🚃 電車モード</button>
+                    </div>
+                </div>
+                <!-- Speed & Count Grid -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block ml-1">問題数: <span id="label-limit" class="text-brand">10</span></label>
+                        <div class="flex bg-slate-100 p-1 rounded-xl">
+                            <button onclick="App.setCount(5)" id="count-btn-5" class="flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400">5</button>
+                            <button onclick="App.setCount(10)" id="count-btn-10" class="flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-brand shadow-sm">10</button>
+                            <button onclick="App.setCount(999)" id="count-btn-999" class="flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400">∞</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block ml-1">話す速さ: <span id="label-speed" class="text-brand">1.0</span></label>
+                        <div class="flex items-center h-[38px] px-2 bg-slate-100 rounded-xl">
+                            <span class="text-xs mr-2">🐢</span>
+                            <input type="range" min="0.5" max="1.5" step="0.1" value="1.0" class="flex-1" oninput="App.setSpeed(this.value)">
+                            <span class="text-xs ml-2">🐇</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Menu -->
+            <div class="w-full max-w-sm space-y-3 mb-10">
+                <p class="text-center text-xs font-bold text-slate-400 mb-2">- コースを選んでスタート -</p>
+                <button onclick="App.preStartCheck('highschool')" class="btn-3d w-full bg-white border-blue-100 border-b-brand-dark/20 p-3 rounded-2xl flex items-center shadow-sm hover:bg-blue-50 active:bg-blue-100 transition-colors group">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-lg group-active:scale-90 transition-transform">🏫</div>
+                    <div class="text-left flex-1 ml-3">
+                        <h3 class="font-extrabold text-slate-700">高校受験</h3>
+                        <p class="text-[10px] text-slate-400 font-bold">全20問 | 志望動機・中学生活など</p>
+                    </div>
+                    <span class="text-brand font-black text-lg">GO</span>
+                </button>
+                <button onclick="App.preStartCheck('university')" class="btn-3d w-full bg-white border-emerald-100 border-b-emerald-600/20 p-3 rounded-2xl flex items-center shadow-sm hover:bg-emerald-50 active:bg-emerald-100 transition-colors group">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-lg group-active:scale-90 transition-transform">🎓</div>
+                    <div class="text-left flex-1 ml-3">
+                        <h3 class="font-extrabold text-slate-700">大学・専門</h3>
+                        <p class="text-[10px] text-slate-400 font-bold">全20問 | 自己PR・将来の夢など</p>
+                    </div>
+                    <span class="text-emerald-500 font-black text-lg">GO</span>
+                </button>
+                <button onclick="App.preStartCheck('job')" class="btn-3d w-full bg-white border-orange-100 border-b-orange-600/20 p-3 rounded-2xl flex items-center shadow-sm hover:bg-orange-50 active:bg-orange-100 transition-colors group">
+                    <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-lg group-active:scale-90 transition-transform">💼</div>
+                    <div class="text-left flex-1 ml-3">
+                        <h3 class="font-extrabold text-slate-700">就職・公務員</h3>
+                        <p class="text-[10px] text-slate-400 font-bold">全20問 | ガクチカ・強みなど</p>
+                    </div>
+                    <span class="text-orange-500 font-black text-lg">GO</span>
+                </button>
+                <button onclick="App.preStartCheck('custom')" class="btn-3d w-full bg-white border-purple-100 border-b-purple-600/20 p-3 rounded-2xl flex items-center shadow-sm hover:bg-purple-50 active:bg-purple-100 transition-colors group">
+                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-lg group-active:scale-90 transition-transform">✨</div>
+                    <div class="text-left flex-1 ml-3">
+                        <h3 class="font-extrabold text-slate-700">My質問だけ</h3>
+                        <p class="text-[10px] text-slate-400 font-bold">登録したオリジナル問題</p>
+                    </div>
+                    <span class="text-purple-500 font-black text-lg">GO</span>
+                </button>
+            </div>
+
+            <!-- Profile -->
+            <div class="w-full max-w-sm p-5 bg-white/60 rounded-3xl border border-white text-center shadow-sm">
+                <div class="flex items-center justify-center space-x-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-white border border-slate-200 overflow-hidden shadow-sm">
+                        <img src="./nerune.png" onerror="this.src='https://img.icons8.com/fluency/192/microphone.png'" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-left">
+                        <p class="text-sm font-black text-slate-700">彗眠ネルネ💤</p>
+                        <p class="text-[10px] text-slate-500 font-medium">YouTubeで睡魔と闘うVtuber</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="javascript:void(0)" onclick="window.open(CONFIG.URLS.YOUTUBE, '_blank')" class="btn-3d flex items-center justify-center bg-[#FF0000] border-[#cc0000] text-white text-xs font-bold py-3 rounded-xl shadow-sm hover:brightness-110">Channel</a>
+                    <button onclick="Social.shareApp()" class="btn-3d flex items-center justify-center bg-slate-800 border-slate-900 text-white text-xs font-bold py-3 rounded-xl shadow-sm hover:bg-slate-700">Share</button>
+                </div>
+            </div>
+            <button onclick="alert('【iPhone】\n画面下の共有ボタン → 「ホーム画面に追加」\n\n【Android】\nメニュー → 「アプリをインストール」')" class="mt-8 mb-6 text-[10px] text-slate-400 underline decoration-slate-300">ホーム画面に追加して使う</button>
+        </section>
+
+        <!-- === TAB: LIST === -->
+        <section id="tab-list" class="hidden p-6 pb-24 min-h-full animate-fade-in">
+            <h2 class="text-xl font-extrabold text-slate-700 mb-6 flex items-center">
+                📝 質問リスト <span class="text-[10px] font-bold text-white bg-slate-300 px-2 py-0.5 rounded-md ml-2">My質問追加</span>
+            </h2>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 mb-6">
+                <input type="text" id="new-q-text" placeholder="質問文（例：校訓は？）" class="w-full bg-slate-50 p-3 rounded-xl text-sm font-bold mb-3 border border-slate-200 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition">
+                <input type="text" id="new-q-hint" placeholder="ヒント（例：自主自立）" class="w-full bg-slate-50 p-3 rounded-xl text-sm mb-4 border border-slate-200 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition">
+                <button onclick="UserData.add()" class="btn-3d w-full bg-brand border-brand-dark text-white font-bold py-3 rounded-xl shadow-md">＋ リストに追加</button>
+            </div>
+            <div id="questions-list-container" class="space-y-4"></div>
+        </section>
+
+        <!-- === TAB: HISTORY === -->
+        <section id="tab-history" class="hidden p-6 pb-24 min-h-full animate-fade-in">
+            <h2 class="text-xl font-extrabold text-slate-700 mb-6">📊 練習のあゆみ</h2>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">累計回答</p>
+                    <p class="text-3xl font-black text-brand mt-1" id="stat-count">0</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">平均スコア</p>
+                    <div class="flex items-center justify-center mt-1">
+                        <span class="text-xl mr-1">⭐</span>
+                        <p class="text-3xl font-black text-slate-700" id="stat-avg">-</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
+                <div class="p-3 bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wide">最近の記録</div>
+                <div id="history-list" class="divide-y divide-slate-100 max-h-80 overflow-y-auto"></div>
+            </div>
+            <button onclick="UserData.clearHistory()" class="text-xs font-bold text-red-400 underline w-full text-center py-4">履歴を全てリセット</button>
+        </section>
+    </main>
+
+    <!-- === OVERLAY: PRACTICE === -->
+    <div id="view-practice" class="hidden fixed inset-0 z-50 bg-[#E0F2FE] flex flex-col safe-area-padding">
+        
+        <!-- Pre-Start Check (Overlay) -->
+        <div id="start-overlay" class="absolute inset-0 z-[60] bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-6 animate-fade-in">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-8 text-center shadow-2xl animate-bounce-sm">
+                <div class="w-20 h-20 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-4xl mb-4">🎤</div>
+                <h3 class="text-xl font-black text-slate-800 mb-2">準備はいい？</h3>
+                <p class="text-sm text-slate-500 mb-8 font-bold" id="start-msg">音が出ます。音量に注意してね！</p>
+                <button onclick="App.realStart()" class="btn-3d w-full bg-brand border-brand-dark text-white font-bold py-4 rounded-xl shadow-lg text-lg flex items-center justify-center">
+                    OK！スタート
+                </button>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <nav class="flex items-center justify-between px-4 pt-4 pb-2 bg-white/60 backdrop-blur-md">
+            <button onclick="App.quit()" class="text-slate-400 font-bold text-sm bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm hover:text-red-500">✕ 中断</button>
+            <div class="bg-white border-2 border-brand text-brand px-4 py-1 rounded-full font-mono font-bold shadow-sm">
+                <span id="timer-display">00:00</span>
+            </div>
+            <span id="q-counter" class="text-[10px] font-black text-slate-400 bg-white px-2 py-1 rounded-lg border border-slate-200">INIT</span>
+        </nav>
+
+        <!-- Question Area -->
+        <div class="flex-1 flex flex-col items-center p-6 overflow-y-auto relative">
+            <div class="w-20 h-20 rounded-full border-4 border-white bg-white mb-6 shadow-sm shrink-0 z-10">
+                <img src="./nerune.png" onerror="this.src='https://img.icons8.com/fluency/192/microphone.png'" class="w-full h-full object-cover">
+            </div>
+            
+            <div class="w-full bg-white rounded-[2rem] p-8 shadow-xl border-4 border-white relative mb-4">
+                <div class="absolute -top-3 left-1/2 -ml-2 w-6 h-6 bg-white rotate-45"></div>
+                <div class="text-center">
+                    <h2 id="question-text" class="text-xl md:text-2xl font-bold text-slate-800 leading-relaxed min-h-[4rem] flex items-center justify-center">Loading...</h2>
+                    <button id="btn-speak" onclick="App.speak()" class="mt-6 text-brand text-xs font-bold bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 transition flex items-center justify-center mx-auto">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                        もう一度きく
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hint -->
+            <div class="w-full px-2 mt-auto">
+                <div id="hint-box" class="hidden bg-yellow-50 border-2 border-accent p-4 rounded-2xl text-yellow-900 text-sm mb-4 animate-slide-up shadow-sm">
+                    <p class="font-bold mb-1 flex items-center text-accent-dark">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"/></svg> ヒント
+                    </p>
+                    <span id="hint-text" class="leading-relaxed">--</span>
+                </div>
+                <button id="btn-hint" onclick="App.toggleHint()" class="w-full text-center text-slate-400 text-xs font-bold underline decoration-dotted py-4">答えがわからない時（ヒントを表示）</button>
+            </div>
+        </div>
+        
+        <!-- Control Area -->
+        <div class="bg-white p-6 pb-8 rounded-t-[2.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-20">
+            <div id="player-area" class="hidden mb-6 bg-slate-50 border border-slate-100 rounded-full px-2 py-1">
+                <audio id="audio-player" controls class="w-full h-10"></audio>
+            </div>
+            
+            <div id="ctrl-answer" class="flex justify-center min-h-[5rem] items-center">
+                <button id="btn-rec" onclick="App.toggleRecord()" class="btn-3d w-20 h-20 rounded-full bg-accent border-accent-dark text-white shadow-xl flex items-center justify-center transform active:scale-95 transition">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.66 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                </button>
+                <button id="btn-stop" onclick="App.toggleRecord()" class="hidden w-20 h-20 rounded-full bg-red-500 border-4 border-white text-white shadow-xl flex items-center justify-center animate-pulse">
+                    <div class="w-8 h-8 bg-white rounded-md"></div>
+                </button>
+                <button id="btn-silent" onclick="App.finishAnswer()" class="hidden btn-3d w-full bg-emerald-500 border-emerald-700 text-white font-bold py-4 rounded-2xl text-lg shadow-lg">🧠 頭の中で回答完了！</button>
+                <p id="mic-error" class="hidden text-xs text-red-400 font-bold mt-2 text-center">マイクが使えないため<br>録音機能はOFFです</p>
+            </div>
+
+            <div id="ctrl-rate" class="hidden text-center animate-slide-up">
+                <p class="text-xs font-bold text-slate-400 mb-4 uppercase tracking-widest">Self Check</p>
+                <div class="flex justify-center gap-4">
+                    <button onclick="App.saveResult(1)" class="btn-rate btn-3d w-20 flex flex-col items-center p-2 bg-slate-100 border-slate-300 rounded-2xl">
+                        <span class="text-3xl mb-1">😖</span><span class="text-[10px] font-bold text-slate-500">イマイチ</span>
+                    </button>
+                    <button onclick="App.saveResult(3)" class="btn-rate btn-3d w-20 flex flex-col items-center p-2 bg-white border-slate-200 rounded-2xl">
+                        <span class="text-3xl mb-1">😐</span><span class="text-[10px] font-bold text-slate-500">ふつう</span>
+                    </button>
+                    <button onclick="App.saveResult(5)" class="btn-rate btn-3d w-20 flex flex-col items-center p-2 bg-yellow-50 border-accent rounded-2xl">
+                        <span class="text-3xl mb-1">😆</span><span class="text-[10px] font-bold text-accent-dark">バッチリ</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === MODAL: RESULT === -->
+    <div id="modal-result" class="hidden fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+        <canvas id="confetti-canvas"></canvas>
+        <div class="bg-white w-full max-w-sm rounded-[2rem] p-6 shadow-2xl animate-bounce-sm text-center relative z-20">
+            <h2 class="text-2xl font-extrabold text-brand mb-2">🎉 おつかれさま！</h2>
+            <div class="w-24 h-24 mx-auto my-5 rounded-full border-4 border-accent overflow-hidden shadow-lg bg-white">
+                <img src="./nerune.png" onerror="this.src='https://img.icons8.com/fluency/192/microphone.png'" class="w-full h-full object-cover">
+            </div>
+            <div class="bg-slate-50 rounded-2xl p-5 mb-6 border border-slate-100">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Result</p>
+                <div class="flex justify-center items-baseline space-x-1">
+                    <span class="text-4xl font-black text-slate-800" id="res-count">0</span>
+                    <span class="text-sm font-bold text-slate-500">問クリア</span>
+                </div>
+                <div class="mt-2 text-sm font-bold text-accent-dark" id="res-msg">Good Job!</div>
+            </div>
+            <button onclick="Social.shareResult()" class="btn-3d w-full bg-black border-slate-800 text-white font-bold py-3.5 rounded-xl mb-3 shadow-lg flex items-center justify-center">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                結果をポストする
+            </button>
+            <button onclick="App.closeResult()" class="text-xs font-bold text-slate-400 p-2 hover:text-brand">ホームに戻る</button>
+        </div>
+    </div>
+
+    <!-- === MODAL: MANNER === -->
+    <div id="modal-manner" class="hidden fixed inset-0 z-[90] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl animate-bounce-sm">
+            <h2 class="text-xl font-extrabold text-brand text-center mb-6">👀 身だしなみチェック</h2>
+            <ul class="space-y-4 mb-8">
+                <li class="flex items-center p-3 bg-slate-50 rounded-xl"><span class="text-2xl mr-3">👔</span><span class="text-sm font-bold text-slate-600">服装は乱れてない？</span></li>
+                <li class="flex items-center p-3 bg-slate-50 rounded-xl"><span class="text-2xl mr-3">💇</span><span class="text-sm font-bold text-slate-600">髪型はスッキリ？</span></li>
+                <li class="flex items-center p-3 bg-slate-50 rounded-xl"><span class="text-2xl mr-3">✨</span><span class="text-sm font-bold text-slate-600">背筋は伸びてる？</span></li>
+            </ul>
+            <button onclick="App.startPractice()" class="btn-3d w-full bg-brand border-brand-dark text-white font-bold py-4 rounded-xl shadow-lg text-lg">OK！スタート</button>
+            <p class="text-center text-[10px] text-slate-300 mt-4">※本日はこれ以降表示されません</p>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast-container"></div>
+
+    <!-- NAVBAR -->
+    <nav class="fixed bottom-0 w-full bg-white/90 backdrop-blur border-t border-slate-200 flex justify-around pb-[env(safe-area-inset-bottom)] pt-2 z-40 h-[calc(4rem+env(safe-area-inset-bottom))]">
+        <button onclick="App.switchTab('home')" class="flex flex-col items-center w-1/3 tab-active group" id="nav-home">
+            <svg class="w-6 h-6 mb-1 icon-svg group-active:scale-90 transition" viewBox="0 0 24 24"><path d="M12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
+            <span class="text-[10px] font-bold">ホーム</span>
+        </button>
+        <button onclick="App.switchTab('list')" class="flex flex-col items-center w-1/3 tab-inactive group" id="nav-list">
+            <svg class="w-6 h-6 mb-1 icon-svg group-active:scale-90 transition" viewBox="0 0 24 24"><path d="M7 7h10v2H7zm0 4h10v2H7z"/><path d="M20.1 3H3.9c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9V3.9c0-.5-.5-.9-.9-.9zM19 19H5V5h14v14z"/></svg>
+            <span class="text-[10px] font-bold">リスト</span>
+        </button>
+        <button onclick="App.switchTab('history')" class="flex flex-col items-center w-1/3 tab-inactive group" id="nav-history">
+            <svg class="w-6 h-6 mb-1 icon-svg group-active:scale-90 transition" viewBox="0 0 24 24"><path d="M13.5 13.48l-4-2.31V7a.5.5 0 011 0v3.58l3.5 2.02a.5.5 0 11-.5.88z"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            <span class="text-[10px] font-bold">あゆみ</span>
+        </button>
+    </nav>
+
+    <!-- === LOGIC === -->
+    <script>
+        /**
+         * Database of Questions
+         */
+        const DB = {
+            questions: {
+                highschool: [
+                    {q:"志望動機を教えてください。",hint:"「なぜこの学校か」＋「入学後やりたいこと」"},
+                    {q:"中学校で一番頑張ったことは？",hint:"部活や行事。結果よりプロセスを大切に。"},
+                    {q:"あなたの長所と短所は？",hint:"長所はエピソードで。短所は改善策も。"},
+                    {q:"最近気になるニュースは？",hint:"自分の意見を一言添えるのがポイント。"},
+                    {q:"将来の夢はありますか？",hint:"高校生活とどう繋がるか話そう。"},
+                    {q:"本校の校則についてどう思いますか？",hint:"社会のルールを守る姿勢を見せる。"},
+                    {q:"得意教科・苦手教科は？",hint:"苦手なものへの取り組み方を話そう。"},
+                    {q:"休日の過ごし方は？",hint:"趣味や勉強などメリハリをアピール。"},
+                    {q:"通学経路と時間は？",hint:"正確に。代替手段も言えるとベスト。"},
+                    {q:"最近読んだ本は？",hint:"漫画以外推奨。感想を簡単に。"},
+                    {q:"尊敬する人は？",hint:"「なぜ尊敬するか」の理由が重要。"},
+                    {q:"友人からどう言われますか？",hint:"客観的な自己分析ができているか。"},
+                    {q:"自己PRを1分で。",hint:"強みを一つに絞って熱意を込めよう。"},
+                    {q:"卒業後の進路は？",hint:"未定でも「探していきたい」と前向きに。"},
+                    {q:"入りたい部活は？",hint:"勉強との両立も含めて話そう。"},
+                    {q:"最近怒ったことは？",hint:"感情のコントロール力が見られている。"},
+                    {q:"あなたの宝物は？",hint:"大切にしている価値観を伝えよう。"},
+                    {q:"苦手な人との接し方は？",hint:"「こう工夫して接します」と対処法を。"},
+                    {q:"最後に一言ありますか？",hint:"熱意を伝えるラストチャンス！"}
+                ],
+                university: [
+                    {q:"本学を志望した理由は？",hint:"アドミッションポリシーと絡めて話そう。"},
+                    {q:"高校時代に力を入れたことは？",hint:"困難→工夫→解決→学び の流れで。"},
+                    {q:"入学後、何を学びたい？",hint:"具体的な授業名やゼミ名を出そう。"},
+                    {q:"自己PRをお願いします。",hint:"結論→根拠→結論のサンドイッチ法で。"},
+                    {q:"将来のキャリアプランは？",hint:"大学での学びがどう仕事に活きるか。"},
+                    {q:"長所をどう活かす？",hint:"「協調性でチームをまとめる」など。"},
+                    {q:"関心のある社会問題は？",hint:"志望学部に関連する話題を選ぼう。"},
+                    {q:"高校の成績について。",hint:"良い点は継続、悪い点は改善の意思を。"},
+                    {q:"オープンキャンパスの感想は？",hint:"雰囲気や設備の印象を具体的に。"},
+                    {q:"リーダー経験はありますか？",hint:"サポート役でも貢献度を話せばOK。"},
+                    {q:"ストレス解消法は？",hint:"自己管理能力があるか見られている。"},
+                    {q:"座右の銘は？",hint:"その言葉を選んだ体験談を添えて。"},
+                    {q:"併願校とその理由は？",hint:"選ぶ「軸」がブレていないか確認。"},
+                    {q:"大学と高校の違いは？",hint:"「自主性」がキーワード。"},
+                    {q:"卒論のテーマは考えてる？",hint:"現時点での興味関心でOK。"},
+                    {q:"最近感動したことは？",hint:"豊かな感性があるか。"},
+                    {q:"意見が割れたらどうする？",hint:"話し合いで解決する姿勢。"},
+                    {q:"ボランティア経験は？",hint:"社会貢献への意識。"},
+                    {q:"あなたにとって教養とは？",hint:"知識＋人間性。"},
+                    {q:"最後に質問は？",hint:"意欲を見せる質問を一つ用意しよう。"}
+                ],
+                job: [
+                    {q:"当社を志望した理由は？",hint:"「好き」＋「貢献できること」。"},
+                    {q:"ガクチカを教えてください。",hint:"数値を使って具体的に成果を示そう。"},
+                    {q:"強みと弱みは？",hint:"弱みは対策とセットで話すこと。"},
+                    {q:"入社後にやりたい仕事は？",hint:"会社の事業を理解しているか確認。"},
+                    {q:"アルバイト経験は？",hint:"働く姿勢や身につけたスキルを。"},
+                    {q:"逆質問はありますか？",hint:"働く意欲が伝わる質問を。"},
+                    {q:"5年後のビジョンは？",hint:"長く働く意思があるか。"},
+                    {q:"周りの評価は？",hint:"自己評価とのズレがないか。"},
+                    {q:"挫折経験はありますか？",hint:"そこからどう立ち直ったかが大事。"},
+                    {q:"苦手な人への対応は？",hint:"組織で働く上での協調性。"},
+                    {q:"気になるニュースは？",hint:"業界関連だと勉強熱心に見える。"},
+                    {q:"仕事とは何ですか？",hint:"お金以外の価値観を。"},
+                    {q:"集団での役割は？",hint:"リーダー、調整役など。"},
+                    {q:"他社の選考状況は？",hint:"一貫性があれば正直に答えてOK。"},
+                    {q:"当社の製品の印象は？",hint:"ユーザー目線＋改善提案があれば◎。"},
+                    {q:"学業以外で没頭したことは？",hint:"集中力のアピール。"},
+                    {q:"勤務地の希望は？",hint:"柔軟な姿勢を見せよう。"},
+                    {q:"体調管理で気をつけていることは？",hint:"社会人の基本ができているか。"},
+                    {q:"親の了承は得ていますか？",hint:"内定辞退の防止確認。"},
+                    {q:"自己PRをお願いします。",hint:"求める人物像にマッチさせて。"}
+                ]
+            }
+        };
+
+        /**
+         * Global State Management
+         */
+        const State = {
+            mode: 'voice',
+            limit: 10,
+            speed: 1.0,
+            course: '',
+            deck: [],
+            currentQ: null,
+            count: 0,
+            results: [],
+            mediaRecorder: null,
+            timer: null,
+            sec: 0,
+            utterance: null,
+            voice: null,
+            userQuestions: [],
+            history: []
+        };
+
+        /**
+         * Utilities
+         */
+        const Utils = {
+            storage: {
+                get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d } catch { return d } },
+                set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) { console.warn(e) } }
+            },
+            toast: (msg) => {
+                const c = document.getElementById('toast-container');
+                const t = document.createElement('div');
+                t.className = 'toast';
+                t.innerText = msg;
+                c.appendChild(t);
+                // Trigger reflow
+                void t.offsetWidth;
+                t.classList.add('show');
+                setTimeout(() => {
+                    t.classList.remove('show');
+                    setTimeout(() => t.remove(), 300);
+                }, 2000);
+            },
+            createConfetti: () => {
+                const c = document.getElementById('confetti-canvas');
+                const ctx = c.getContext('2d');
+                c.width = window.innerWidth;
+                c.height = window.innerHeight;
+                const p = [];
+                const clr = ['#38BDF8', '#FACC15', '#F472B6', '#4ADE80'];
+                for (let i = 0; i < 100; i++) {
+                    p.push({
+                        x: Math.random() * c.width,
+                        y: Math.random() * c.height - c.height,
+                        color: clr[Math.floor(Math.random() * clr.length)],
+                        size: Math.random() * 8 + 4,
+                        speed: Math.random() * 5 + 2,
+                        angle: Math.random() * 6.2
+                    })
+                }
+                function draw() {
+                    ctx.clearRect(0, 0, c.width, c.height);
+                    p.forEach(pt => {
+                        pt.y += pt.speed;
+                        pt.x += Math.sin(pt.angle) * 2;
+                        pt.angle += 0.1;
+                        if (pt.y > c.height) pt.y = -20;
+                        ctx.fillStyle = pt.color;
+                        ctx.fillRect(pt.x, pt.y, pt.size, pt.size)
+                    });
+                    if(document.getElementById('modal-result').classList.contains('hidden')) return;
+                    requestAnimationFrame(draw)
+                }
+                draw()
+            }
+        };
+
+        /**
+         * Core Application Logic
+         */
+        const App = {
+            init: () => {
+                State.userQuestions = Utils.storage.get('myQuestions', []);
+                State.history = Utils.storage.get('history', []);
+                
+                // Initialize TTS Voice
+                App.initVoice();
+                if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                    window.speechSynthesis.onvoiceschanged = App.initVoice;
+                }
+
+                App.renderList();
+                App.renderHistory();
+                App.checkStreak();
+                
+                // Stop timer on background
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        window.speechSynthesis.cancel();
+                        clearInterval(State.timer);
+                    }
+                });
+
+                // Check MediaRecorder support
+                if (!navigator.mediaDevices || !window.MediaRecorder) {
+                    document.getElementById('btn-rec').classList.add('hidden');
+                    document.getElementById('mic-error').classList.remove('hidden');
+                }
+            },
+
+            initVoice: () => {
+                const voices = window.speechSynthesis.getVoices();
+                // Prefer Japanese voices, then prioritize Google or Microsoft high quality ones
+                const jpVoices = voices.filter(v => v.lang.includes('ja'));
+                if (jpVoices.length > 0) {
+                    State.voice = jpVoices.find(v => v.name.includes('Google')) || jpVoices.find(v => v.name.includes('Microsoft')) || jpVoices[0];
+                }
+            },
+
+            switchTab: (id) => {
+                ['home', 'list', 'history'].forEach(t => {
+                    document.getElementById(`tab-${t}`).classList.add('hidden');
+                    const n = document.getElementById(`nav-${t}`);
+                    n.classList.remove('tab-active');
+                    n.classList.add('tab-inactive');
+                });
+                document.getElementById(`tab-${id}`).classList.remove('hidden');
+                const a = document.getElementById(`nav-${id}`);
+                a.classList.remove('tab-inactive');
+                a.classList.add('tab-active');
+                if (id === 'list') App.renderList();
+                if (id === 'history') App.renderHistory();
+            },
+
+            setMode: (m) => {
+                State.mode = m;
+                const v = document.getElementById('mode-btn-voice');
+                const s = document.getElementById('mode-btn-silent');
+                if (m === 'voice') {
+                    v.className = "flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-brand shadow-sm transition-all";
+                    s.className = "flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all";
+                } else {
+                    v.className = "flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all";
+                    s.className = "flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-emerald-500 shadow-sm transition-all";
+                }
+            },
+
+            setCount: (n) => {
+                State.limit = n;
+                document.getElementById('label-limit').innerText = n === 999 ? '無限' : `${n}問`;
+                [5, 10, 999].forEach(x => {
+                    const b = document.getElementById(`count-btn-${x}`);
+                    b.className = x === n 
+                        ? "flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-brand shadow-sm transition-all"
+                        : "flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-400 transition-all";
+                });
+            },
+
+            setSpeed: (v) => {
+                State.speed = parseFloat(v);
+                document.getElementById('label-speed').innerText = v;
+            },
+
+            preStartCheck: (c) => {
+                State.course = c;
+                const t = new Date().toDateString();
+                // Show manner check only once per day
+                if (Utils.storage.get('lastMannerCheck', '') === t) {
+                    App.startPractice();
+                } else {
+                    document.getElementById('modal-manner').classList.remove('hidden');
+                    Utils.storage.set('lastMannerCheck', t);
+                }
+            },
+
+            startPractice: () => {
+                document.getElementById('modal-manner').classList.add('hidden');
+                document.getElementById('view-practice').classList.remove('hidden');
+                document.getElementById('start-overlay').classList.remove('hidden');
+                
+                // Customize start message based on mode
+                document.getElementById('start-msg').innerText = State.mode === 'voice' 
+                    ? "音が出ます。音量に注意してね！" 
+                    : "電車モードです。音は出ません。";
+                
+                State.count = 0;
+                State.results = [];
+                State.deck = [];
+                if (State.course === 'custom') {
+                    State.deck = [...State.userQuestions];
+                    if (State.deck.length === 0) {
+                        alert("My質問がありません。リストタブから追加してください。");
+                        App.quit();
+                        return;
+                    }
+                } else {
+                    State.deck = [...DB.questions[State.course]];
+                }
+            },
+
+            realStart: () => {
+                // Initialize Audio Context concept by user interaction
+                window.speechSynthesis.cancel();
+                document.getElementById('start-overlay').classList.add('hidden');
+                App.updateCounter();
+                App.nextQuestion();
+            },
+
+            nextQuestion: () => {
+                // Check if finished
+                if ((State.course !== 'custom' && State.limit !== 999 && State.deck.length === 0) || State.count >= State.limit) {
+                    App.showResult();
+                    return;
+                }
+                // Refill deck if infinite mode
+                if (State.limit === 999 && State.deck.length === 0) {
+                    State.deck = [...(State.course === 'custom' ? State.userQuestions : DB.questions[State.course])];
+                }
+
+                App.resetUI();
+                
+                // Random Pick
+                const i = Math.floor(Math.random() * State.deck.length);
+                State.currentQ = State.deck[i];
+                State.deck.splice(i, 1);
+                
+                App.updateCounter();
+                document.getElementById('question-text').innerText = State.currentQ.q;
+                document.getElementById('hint-text').innerText = State.currentQ.hint || "なし";
+                
+                if (State.mode === 'voice') App.speak();
+                App.startTimer();
+            },
+
+            resetUI: () => {
+                document.getElementById('hint-box').classList.add('hidden');
+                document.getElementById('btn-hint').classList.remove('hidden');
+                document.getElementById('ctrl-answer').classList.remove('hidden');
+                document.getElementById('ctrl-rate').classList.add('hidden');
+                document.getElementById('player-area').classList.add('hidden');
+                document.querySelectorAll('.btn-rate').forEach(b => b.disabled = false);
+                
+                ['btn-rec', 'btn-stop', 'btn-silent', 'btn-speak'].forEach(i => document.getElementById(i).classList.add('hidden'));
+                
+                if (State.mode === 'voice') {
+                    if (navigator.mediaDevices && window.MediaRecorder) {
+                        document.getElementById('btn-rec').classList.remove('hidden');
+                    } else {
+                        // Fallback if no mic support
+                        document.getElementById('btn-silent').classList.remove('hidden');
+                    }
+                    document.getElementById('btn-speak').classList.remove('hidden');
+                } else {
+                    document.getElementById('btn-silent').classList.remove('hidden');
+                }
+            },
+
+            speak: () => {
+                window.speechSynthesis.cancel();
+                State.utterance = new SpeechSynthesisUtterance(State.currentQ.q);
+                State.utterance.lang = "ja-JP";
+                State.utterance.rate = State.speed; // Apply speed setting
+                if (State.voice) State.utterance.voice = State.voice;
+                window.speechSynthesis.speak(State.utterance);
+            },
+
+            toggleRecord: async () => {
+                if (!State.mediaRecorder || State.mediaRecorder.state === 'inactive') {
+                    try {
+                        window.speechSynthesis.cancel();
+                        const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        State.mediaRecorder = new MediaRecorder(s);
+                        let c = [];
+                        
+                        State.mediaRecorder.ondataavailable = e => c.push(e.data);
+                        State.mediaRecorder.onstop = () => {
+                            // Support various mime types for iOS/Android
+                            const type = State.mediaRecorder.mimeType || 'audio/webm';
+                            const b = new Blob(c, { type: type });
+                            const audioUrl = URL.createObjectURL(b);
+                            document.getElementById('audio-player').src = audioUrl;
+                            document.getElementById('player-area').classList.remove('hidden');
+                            App.toRatingPhase();
+                            s.getTracks().forEach(t => t.stop());
+                        };
+                        
+                        State.mediaRecorder.start();
+                        document.getElementById('btn-rec').classList.add('hidden');
+                        document.getElementById('btn-stop').classList.remove('hidden');
+                    } catch (e) {
+                        alert("マイクへのアクセスが拒否されたか、対応していません。\n設定を確認してください。");
+                        console.error(e);
+                    }
+                } else {
+                    State.mediaRecorder.stop();
+                    document.getElementById('btn-stop').classList.add('hidden');
+                }
+            },
+
+            finishAnswer: () => {
+                App.toRatingPhase();
+            },
+
+            toRatingPhase: () => {
+                clearInterval(State.timer);
+                window.speechSynthesis.cancel();
+                document.getElementById('ctrl-answer').classList.add('hidden');
+                document.getElementById('ctrl-rate').classList.remove('hidden');
+            },
+
+            saveResult: (s) => {
+                document.querySelectorAll('.btn-rate').forEach(b => b.disabled = true);
+                State.count++;
+                State.results.push(s);
+                State.history.unshift({ q: State.currentQ.q, score: s, date: new Date().toLocaleDateString() });
+                
+                if (State.history.length > 50) State.history.pop();
+                Utils.storage.set('history', State.history);
+                
+                // Small delay to show selection feedback
+                setTimeout(App.nextQuestion, 400);
+            },
+
+            quit: () => {
+                clearInterval(State.timer);
+                window.speechSynthesis.cancel();
+                if (State.mediaRecorder && State.mediaRecorder.state === 'recording') {
+                    State.mediaRecorder.stop();
+                }
+                document.getElementById('view-practice').classList.add('hidden');
+                App.renderHistory();
+            },
+
+            checkStreak: () => {
+                const t = new Date().toDateString();
+                const l = Utils.storage.get('lastVisit', '');
+                let s = Utils.storage.get('streak', 0);
+                
+                if (l) {
+                    const d = (new Date(t) - new Date(l)) / (1000 * 60 * 60 * 24);
+                    if (d >= 1 && d < 2) s++; // Consecutive day
+                    else if (d >= 2) s = 1; // Broken streak
+                } else {
+                    s = 1;
+                }
+                Utils.storage.set('lastVisit', t);
+                Utils.storage.set('streak', s);
+                
+                if (s > 1) {
+                    document.getElementById('streak-count').innerText = s;
+                    document.getElementById('streak-badge').classList.remove('hidden');
+                }
+            },
+
+            showResult: () => {
+                window.speechSynthesis.cancel();
+                document.getElementById('view-practice').classList.add('hidden');
+                document.getElementById('modal-result').classList.remove('hidden');
+                
+                const n = State.results.length;
+                const a = n > 0 ? (State.results.reduce((x, y) => x + y, 0) / n) : 0;
+                
+                document.getElementById('res-count').innerText = n;
+                let m = "Nice Try!";
+                if (a >= 4.5) m = "Excellent! 完璧です✨";
+                else if (a >= 3.5) m = "Great! 自信を持って👍";
+                else if (n > 0) m = "Good! その調子🔥";
+                document.getElementById('res-msg').innerText = m;
+                
+                Utils.createConfetti();
+            },
+
+            closeResult: () => {
+                document.getElementById('modal-result').classList.add('hidden');
+                App.renderHistory();
+            },
+
+            toggleHint: () => {
+                document.getElementById('hint-box').classList.remove('hidden');
+                document.getElementById('btn-hint').classList.add('hidden');
+            },
+
+            startTimer: () => {
+                State.sec = 0;
+                document.getElementById('timer-display').innerText = "00:00";
+                clearInterval(State.timer);
+                State.timer = setInterval(() => {
+                    State.sec++;
+                    const m = String(Math.floor(State.sec / 60)).padStart(2, '0');
+                    const s = String(State.sec % 60).padStart(2, '0');
+                    document.getElementById('timer-display').innerText = `${m}:${s}`;
+                }, 1000);
+            },
+
+            updateCounter: () => {
+                const t = State.limit === 999 ? "∞" : State.limit;
+                document.getElementById('q-counter').innerText = `${State.count + 1}/${t}問`;
+            },
+
+            renderList: () => {
+                const c = document.getElementById('questions-list-container');
+                c.innerHTML = "";
+                
+                // Render My Questions
+                if (State.userQuestions.length > 0) {
+                    const h = document.createElement('div');
+                    h.className = "text-xs font-bold text-purple-500 mt-4 mb-2 ml-1";
+                    h.innerText = "★ My質問";
+                    c.appendChild(h);
+                    
+                    State.userQuestions.forEach((q, i) => {
+                        const e = document.createElement('div');
+                        e.className = "bg-white p-4 rounded-xl border border-purple-100 flex justify-between items-center shadow-sm mb-2";
+                        e.innerHTML = `
+                            <div>
+                                <p class="font-bold text-sm text-slate-700">${q.q}</p>
+                                <p class="text-xs text-slate-400 mt-1">ヒント: ${q.hint || '-'}</p>
+                            </div>
+                            <button onclick="UserData.remove(${i})" class="text-red-400 text-xs font-bold border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50">削除</button>
+                        `;
+                        c.appendChild(e);
+                    });
+                }
+                
+                // Render Default Categories
+                ['highschool', 'university', 'job'].forEach(cat => {
+                    const h = document.createElement('div');
+                    h.className = "text-xs font-bold text-slate-400 mt-6 mb-2 ml-1 uppercase";
+                    h.innerText = cat;
+                    c.appendChild(h);
+                    
+                    DB.questions[cat].forEach(q => {
+                        const e = document.createElement('div');
+                        e.className = "bg-slate-50 p-4 rounded-xl border border-slate-100 mb-2";
+                        
+                        // Analysis tags
+                        const rel = State.history.filter(h => h.q === q.q);
+                        let b = "";
+                        if (rel.length > 0) {
+                            const a = rel.reduce((x, y) => x + y.score, 0) / rel.length;
+                            if (a < 2.5) b = `<span class="bg-red-100 text-red-500 text-[10px] px-2 py-0.5 rounded-md font-bold ml-2">⚠️ 苦手</span>`;
+                            else if (a >= 4.5) b = `<span class="bg-yellow-100 text-yellow-600 text-[10px] px-2 py-0.5 rounded-md font-bold ml-2">👑 得意</span>`;
+                        }
+                        
+                        e.innerHTML = `<p class="font-bold text-sm text-slate-700 flex items-center">${q.q}${b}</p><p class="text-xs text-slate-400 mt-1">💡 ${q.hint}</p>`;
+                        c.appendChild(e);
+                    });
+                });
+            },
+
+            renderHistory: () => {
+                const l = document.getElementById('history-list');
+                l.innerHTML = "";
+                
+                if (State.history.length === 0) {
+                    l.innerHTML = '<div class="p-8 text-center text-xs text-slate-400">まだ履歴がありません</div>';
+                    document.getElementById('stat-count').innerText = "0";
+                    document.getElementById('stat-avg').innerText = "-";
+                    return;
+                }
+                
+                const a = State.history.reduce((x, y) => x + y.score, 0) / State.history.length;
+                document.getElementById('stat-count').innerText = State.history.length;
+                document.getElementById('stat-avg').innerText = a.toFixed(1);
+                
+                State.history.forEach(h => {
+                    const e = document.createElement('div');
+                    e.className = "p-4 flex justify-between items-center hover:bg-slate-50 transition";
+                    let f = h.score === 1 ? '😖' : (h.score === 3 ? '😐' : '😆');
+                    let c = h.score === 1 ? 'text-slate-400' : (h.score === 3 ? 'text-slate-500' : 'text-yellow-500');
+                    e.innerHTML = `
+                        <div class="flex-1 min-w-0 pr-4">
+                            <p class="text-sm font-bold text-slate-700 truncate">${h.q}</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">${h.date}</p>
+                        </div>
+                        <div class="text-2xl ${c}">${f}</div>
+                    `;
+                    l.appendChild(e);
+                });
+            }
+        };
+
+        const UserData = {
+            add: () => {
+                const q = document.getElementById('new-q-text').value.trim();
+                const h = document.getElementById('new-q-hint').value.trim();
+                if (!q) return;
+                State.userQuestions.push({ q: q, hint: h });
+                Utils.storage.set('myQuestions', State.userQuestions);
+                document.getElementById('new-q-text').value = "";
+                document.getElementById('new-q-hint').value = "";
+                App.renderList();
+                Utils.toast("質問を追加しました！");
+            },
+            remove: (i) => {
+                if (!confirm("本当に削除しますか？")) return;
+                State.userQuestions.splice(i, 1);
+                Utils.storage.set('myQuestions', State.userQuestions);
+                App.renderList();
+                Utils.toast("削除しました");
+            },
+            clearHistory: () => {
+                if (!confirm("履歴を全てリセットしますか？この操作は元に戻せません。")) return;
+                State.history = [];
+                Utils.storage.set('history', []);
+                App.renderHistory();
+                App.renderList(); // Update tags
+                Utils.toast("履歴をリセットしました");
+            }
+        };
+
+        const Social = {
+            shareApp: () => {
+                const t = `面接対策アプリ「めんせつ★ノック」\n作成者: 彗眠ネルネ💤 ${CONFIG.ACCOUNTS.X}\n\nスマホで面接練習してみた！`;
+                window.open(`${CONFIG.URLS.X_SHARE}?text=${encodeURIComponent(t)}&url=${encodeURIComponent(location.href)}`, '_blank');
+            },
+            shareResult: () => {
+                const c = State.results.length;
+                if (c === 0) return;
+                const a = State.results.reduce((x, y) => x + y, 0) / c;
+                const t = `【めんせつ★ノック】\n面接練習 ${c}問クリア！\n今回のスコア: ${a.toFixed(1)}/5.0\n\n作成者: 彗眠ネルネ💤 ${CONFIG.ACCOUNTS.X}`;
+                window.open(`${CONFIG.URLS.X_SHARE}?text=${encodeURIComponent(t)}&url=${encodeURIComponent(location.href)}`, '_blank');
+            }
+        };
+
+        window.onload = App.init;
+    </script>
+</body>
+</html>
