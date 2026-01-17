@@ -1,0 +1,21 @@
+{
+  "name": "面接ノック",
+  "short_name": "面接ノック",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#E0F2FE",
+  "theme_color": "#E0F2FE",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "nerune.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "nerune.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
